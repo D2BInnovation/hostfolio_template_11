@@ -16,20 +16,20 @@ export async function loadPortfolioData() {
   try {
     isLoading.value = true
     error.value = null
-    
+
     // In production, this would be fetched from an API
     // For now, we'll import the JSON directly
     const data = await import('../../data.json')
-    
+
     // Merge data into reactive object
     Object.assign(portfolioData, data.default)
-    
+
     // Determine which sections are available
     determineAvailableSections()
-    
+
     isLoading.value = false
     return portfolioData
-    
+
   } catch (err) {
     console.error('Error loading portfolio data:', err)
     error.value = 'Failed to load portfolio data'
@@ -43,7 +43,7 @@ export async function loadPortfolioData() {
  */
 function determineAvailableSections() {
   const sections = []
-  
+
   // Check each section for valid data
   const sectionChecks = [
     { key: 'hero', label: 'Home' },
@@ -56,19 +56,19 @@ function determineAvailableSections() {
     { key: 'achievements', label: 'Achievements' },
     { key: 'contact', label: 'Contact' }
   ]
-  
+
   sectionChecks.forEach(section => {
     const sectionData = portfolioData[section.key]
-    
+
     // Section is available if:
     // - It exists
     // - It's not null
     // - It's not an empty object
     // - It's not an empty array
-    if (sectionData && 
-        typeof sectionData === 'object' && 
-        ((Array.isArray(sectionData) && sectionData.length > 0) || 
-         (!Array.isArray(sectionData) && Object.keys(sectionData).length > 0))) {
+    if (sectionData &&
+      typeof sectionData === 'object' &&
+      ((Array.isArray(sectionData) && sectionData.length > 0) ||
+        (!Array.isArray(sectionData) && Object.keys(sectionData).length > 0))) {
       sections.push({
         key: section.key,
         label: section.label,
@@ -76,7 +76,7 @@ function determineAvailableSections() {
       })
     }
   })
-  
+
   availableSections.value = sections
 }
 
@@ -131,4 +131,12 @@ export function getPersonalInfo() {
  */
 export function getSectionData(sectionKey) {
   return portfolioData[sectionKey]
+}
+
+/**
+ * Get resume URL
+ * @returns {string|null} Resume URL
+ */
+export function getResumeUrl() {
+  return portfolioData.resume || portfolioData.personal?.resume || null
 }

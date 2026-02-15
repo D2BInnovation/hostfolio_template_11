@@ -31,6 +31,16 @@
                 {{ section.label }}
               </a>
             </li>
+            <li v-if="resumeUrl" class="nav-item">
+              <a 
+                :href="resumeUrl" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                class="nav-link nav-link--resume"
+              >
+                Resume
+              </a>
+            </li>
           </ul>
         </div>
 
@@ -68,6 +78,17 @@
               {{ section.label }}
             </a>
           </li>
+          <li v-if="resumeUrl" class="mobile-nav-item">
+            <a 
+              :href="resumeUrl" 
+              target="_blank" 
+              rel="noopener noreferrer"
+              class="mobile-nav-link mobile-nav-link--resume"
+              @click="isMobileMenuOpen = false"
+            >
+              Download Resume
+            </a>
+          </li>
         </ul>
       </div>
     </div>
@@ -76,7 +97,7 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
-import { getAvailableSections, getPersonalInfo } from '@services/data-loader'
+import { getAvailableSections, getPersonalInfo, getResumeUrl } from '@services/data-loader'
 import { animateNavbar, createScrollReveal } from '@animations/gsapAnimations'
 
 // Reactive data
@@ -85,6 +106,7 @@ const personalInfo = ref({})
 const activeSection = ref('hero')
 const isScrolled = ref(false)
 const isMobileMenuOpen = ref(false)
+const resumeUrl = ref(null)
 
 // Template refs
 const navbar = ref(null)
@@ -188,6 +210,7 @@ onMounted(async () => {
   // Load data
   availableSections.value = getAvailableSections()
   personalInfo.value = getPersonalInfo()
+  resumeUrl.value = getResumeUrl()
 
   // Initialize animations
   await initializeAnimations()
